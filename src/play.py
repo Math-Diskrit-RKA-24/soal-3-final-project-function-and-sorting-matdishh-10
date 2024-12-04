@@ -84,36 +84,93 @@ def Passive(attacker, target):
 
 inputData()
 
-# Game Turn-Based
-first_attacker = rd.choice(gm.PlayerList)
-second_attacker = gm.PlayerList[1] if first_attacker == gm.PlayerList[0] else gm.PlayerList[0]
+# ================================ Auto Gameplay ===============================
+# first_attacker = rd.choice(gm.PlayerList)
+# second_attacker = gm.PlayerList[1] if first_attacker == gm.PlayerList[0] else gm.PlayerList[0]
 
-print(f"\nPemain pertama yang menyerang adalah {first_attacker['name']}!")
+# print(f"\nPemain pertama yang menyerang adalah {first_attacker['name']}!")
 
-turn = 0
-while gm.PlayerList[0]['health'] > 0 and gm.PlayerList[1]['health'] > 0:
-    attacker = first_attacker if turn % 2 == 0 else second_attacker
-    target = second_attacker if turn % 2 == 0 else first_attacker
+# turn = 0
+# while gm.PlayerList[0]['health'] > 0 and gm.PlayerList[1]['health'] > 0:
+#     attacker = first_attacker if turn % 2 == 0 else second_attacker
+#     target = second_attacker if turn % 2 == 0 else first_attacker
 
-    # Cek apakah attacker menjadi defensif
-    if rd.random() < 0.5:
-        gm.setPlayer(attacker, 'defense', True)
-        print(f"{attacker['name']} memilih untuk menjadi defensif dan tidak menyerang!")
+#     # Cek apakah attacker menjadi defensif
+#     if rd.random() < 0.5:
+#         gm.setPlayer(attacker, 'defense', True)
+#         print(f"{attacker['name']} memilih untuk menjadi defensif dan tidak menyerang!")
+#         turn += 1
+#         continue
+
+#     print(f"\n{attacker['name']} menyerang {target['name']}.")
+#     dodge = Passive(attacker, target)
+#     if dodge:
+#         turn += 1
+#         continue
+
+#     gm.attackPlayer(attacker, target)
+
+#     print(f"Status {attacker['name']}: Health = {attacker['health']}, Score = {attacker['score']}")
+#     print(f"Status {target['name']}: Health = {target['health']}, Score = {target['score']}")
+
+#     turn += 1
+
+# ============================== Manual Gameplay =============================
+def manualGamePlay():
+    # Memilih penyerang pertama secara acak
+    first_attacker = rd.choice(gm.PlayerList)
+    second_attacker = gm.PlayerList[1] if first_attacker == gm.PlayerList[0] else gm.PlayerList[0]
+
+    print(f"\nPemain pertama yang menyerang adalah {first_attacker['name']}!")
+
+    turn = 0
+    while gm.PlayerList[0]['health'] > 0 and gm.PlayerList[1]['health'] > 0:
+        attacker = first_attacker if turn % 2 == 0 else second_attacker
+        target = second_attacker if turn % 2 == 0 else first_attacker
+
+        print(f"\nGiliran {attacker['name']}")
+        print("Pilih tindakan:")
+        print("1. Serang")
+        print("2. Bertahan")
+        print("3. Kemampuan Pasif")
+        
+        try:
+            action = int(input("Masukkan pilihan Anda: "))
+            if action == 1:
+                # Serangan
+                print(f"{attacker['name']} menyerang {target['name']}.")
+                dodge = Passive(attacker, target)
+                if dodge:
+                    print(f"{target['name']} berhasil menghindar!")
+                else:
+                    gm.attackPlayer(attacker, target)
+                    print(f"{attacker['name']} menyerang {target['name']}!")
+            elif action == 2:
+                # Bertahan
+                gm.setPlayer(attacker, 'defense', True)
+                print(f"{attacker['name']} memilih untuk bertahan!")
+            elif action == 3:
+                # Kemampuan Pasif
+                print(f"{attacker['name']} mencoba menggunakan kemampuan pasif.")
+                Passive(attacker, target)
+            else:
+                print("Pilihan tidak valid. Lewati giliran.")
+        except ValueError:
+            print("Masukkan angka yang valid. Giliran dilewati.")
+        
+        # Menampilkan status pemain
+        print(f"\nStatus {attacker['name']}: Health = {attacker['health']}, Score = {attacker['score']}")
+        print(f"Status {target['name']}: Health = {target['health']}, Score = {target['score']}")
+        
+        # Perpindahan giliran
         turn += 1
-        continue
 
-    print(f"\n{attacker['name']} menyerang {target['name']}.")
-    dodge = Passive(attacker, target)
-    if dodge:
-        turn += 1
-        continue
+    # Menampilkan hasil pertandingan
+    print("\nPertandingan selesai!")
+    gm.displayMatchResult()
 
-    gm.attackPlayer(attacker, target)
-
-    print(f"Status {attacker['name']}: Health = {attacker['health']}, Score = {attacker['score']}")
-    print(f"Status {target['name']}: Health = {target['health']}, Score = {target['score']}")
-
-    turn += 1
+# Panggil fungsi manual gameplay
+manualGamePlay()
 
 # Display Result
 print("\nPertandingan selesai!")
