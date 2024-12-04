@@ -34,14 +34,15 @@ def setPlayer(player, key, value):
     player[key] = value
 
 # No 6
+
 def attackPlayer(attacker, target):
     if target['defense'] == True:
-        damaged = max(0, attacker['damage'] - target['defensePower'])
-        setPlayer(attacker, 'score', attacker['score'] + 0.8)
+        damage = (attacker.get('damage') - target.get('defensePower'))
+        setPlayer(attacker, 'score', (round(attacker.get('score') + 1 - 1/target['defensePower'], 2 )))
     else:
-        damaged = attacker['damage']
+        damage = attacker.get('damage')
         setPlayer(attacker, 'score', attacker['score'] + 1)
-    setPlayer(target, 'health', target['health'] - damaged)
+    setPlayer(target, 'health', target['health'] - damage)
     setPlayer(target, 'defense', False)
 
 # No 7
